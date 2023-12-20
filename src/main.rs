@@ -8,13 +8,11 @@ use scanner::Scanner;
 fn tokenize_line<'a>(line: &str) {
     let mut scanner = Scanner::new(line);
 
-    println!(">>>");
     let tokens = scanner.scan_tokens().unwrap();
-    println!("count: {}", tokens.len());
     for t in tokens {
         print!("{:?} ", t);
     }
-
+    println!();
 }
 
 fn main() -> io::Result<()> {
@@ -22,7 +20,7 @@ fn main() -> io::Result<()> {
 
     println!(">>>");
     for (n, line) in input.lines().enumerate() {
-        println!("{n:03}: ");
+        print!("{n:03}: ");
         tokenize_line(line);
     }
     Ok(())

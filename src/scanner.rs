@@ -7,33 +7,21 @@ pub(crate) enum Token {
     Eof,
 }
 
-#[derive(Debug)]
-pub(crate) struct Line {
-    tokens: Vec<Token>,
-}
-
 pub(crate) struct Scanner<'a> {
-    source: &'a str,
     iter: Peekable<Chars<'a>>,
     tokens: Vec<Token>,
-    start: usize,
-    current: usize,
 }
 
 impl<'a> Scanner<'a> {
     pub(crate) fn new(input: &'a str) -> Self {
         Self {
-            source: input,
             iter: input.chars().peekable(),
             tokens: Vec::new(),
-            start: 0,
-            current: 0,
         }
     }
 
     pub(crate) fn scan_tokens(&mut self) -> Result<&Vec<Token>, &str> {
         while !self.is_at_end() {
-            self.start = self.current;
             self.scan_token();
         }
         self.add_token(Token::Eof);
@@ -81,7 +69,6 @@ impl<'a> Scanner<'a> {
     fn advance(&mut self) -> Option<char> {
         match self.iter.next() {
             Some(c) => {
-                self.current += 1;
                 Some(c)
             }
             None => None,
@@ -92,7 +79,7 @@ impl<'a> Scanner<'a> {
         self.iter.peek()
     }
 
-    fn is_at_end(&self) -> bool {
-        self.current >= self.source.len()
+    fn is_at_end(&mut self) -> bool {
+        self.peek() == None
     }
 }
