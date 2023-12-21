@@ -42,7 +42,7 @@ impl<'a> Scanner<'a> {
         while !self.is_at_end() {
             let token = self.scan_token();
             match token {
-                Token::Eof => return lines,
+                Token::Eof => break,
                 Token::Eol => {
                     lines.push(line);
                     line = Line::new();
