@@ -1,38 +1,68 @@
-use std::{iter::Peekable, str::Chars};
+use std::iter::Peekable;
+use std::str::Chars;
 
 #[derive(Debug)]
-pub(crate) enum Token {
+enum Token {
     WhiteSpace(usize),
     Text(String),
+    Eol,
     Eof,
+}
+
+#[derive(Debug)]
+pub(crate) struct Line {
+    tokens: Vec<Token>,
+}
+
+impl Line {
+    fn new() -> Self {
+        Self {
+            tokens: Vec::new(),
+        }
+    }
+
+    fn add_token(&mut self, token: Token) {
+        self.tokens.push(token);
+    }
 }
 
 pub(crate) struct Scanner<'a> {
     iter: Peekable<Chars<'a>>,
-    tokens: Vec<Token>,
 }
 
 impl<'a> Scanner<'a> {
     pub(crate) fn new(input: &'a str) -> Self {
         Self {
             iter: input.chars().peekable(),
-            tokens: Vec::new(),
         }
     }
 
-    pub(crate) fn scan_tokens(&mut self) -> Result<&Vec<Token>, &str> {
+    pub(crate) fn scan(&mut self) -> Vec<Line> {
+        let mut lines: Vec<Line> = Vec::new();
+        let mut line = Line::new();
+
         while !self.is_at_end() {
-            self.scan_token();
+            let token = self.scan_token();
+            match token {
+                Token::Eof => return lines,
+                Token::Eol => {
+                    lines.push(line);
+                    line = Line::new();
+                }
+                _ => line.add_token(token),
+            }
         }
-        self.add_token(Token::Eof);
-
-        Ok(&self.tokens)
+        lines
     }
 
-    fn scan_token(&mut self) {
+    fn scan_token(&mut self) -> Token {
         let o = self.peek();
         let c = match o {
-            None => return,
+            None => return Token::Eof,
+            Some(&'\n') => {
+                self.advance();
+                return Token::Eol;
+            }
             Some(c) => c,
         };
         match c {
@@ -41,38 +71,29 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn whitespace(&mut self) {
+    fn whitespace(&mut self) -> Token {
         let mut n: usize = 0;
         while let Some(' ') = self.peek() {
             n += 1;
             self.advance();
         }
-        self.add_token(Token::WhiteSpace(n));
+        Token::WhiteSpace(n)
     }
 
-    fn text(&mut self) {
+    fn text(&mut self) -> Token {
         let mut buf = String::new();
         while let Some(c) = self.peek() {
-            if *c == ' ' {
+            if *c == ' ' || *c == '\n' {
                 break;
             }
             buf.push(*c);
             self.advance();
         }
-        self.add_token(Token::Text(buf));
-    }
-
-    fn add_token(&mut self, token: Token) {
-        self.tokens.push(token);
+        Token::Text(buf)
     }
 
     fn advance(&mut self) -> Option<char> {
-        match self.iter.next() {
-            Some(c) => {
-                Some(c)
-            }
-            None => None,
-        }
+        self.iter.next()
     }
 
     fn peek(&mut self) -> Option<&char> {
@@ -80,6 +101,6 @@ impl<'a> Scanner<'a> {
     }
 
     fn is_at_end(&mut self) -> bool {
-        self.peek() == None
+        self.peek().is_none()
     }
 }
