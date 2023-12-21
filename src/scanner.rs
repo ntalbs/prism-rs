@@ -16,9 +16,7 @@ pub(crate) struct Line {
 
 impl Line {
     fn new() -> Self {
-        Self {
-            tokens: Vec::new(),
-        }
+        Self { tokens: Vec::new() }
     }
 
     fn add_token(&mut self, token: Token) {
