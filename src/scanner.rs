@@ -1,13 +1,18 @@
+use std::collections::HashSet;
 use std::iter::Peekable;
 use std::str::Chars;
 
 #[derive(Debug)]
 enum Token {
     WhiteSpace(usize),
-    Text(String),
+    Punctuation(char),
+    String(String),
+    Name(String),
+    Keyword(String),
     Eol,
     Eof,
 }
+
 
 #[derive(Debug)]
 pub(crate) struct Line {
@@ -54,18 +59,19 @@ impl<'a> Scanner<'a> {
     }
 
     fn scan_token(&mut self) -> Token {
-        let o = self.peek();
-        let c = match o {
+        let c = match self.peek() {
             None => return Token::Eof,
             Some(&'\n') => {
                 self.advance();
                 return Token::Eol;
             }
-            Some(c) => c,
+            Some(c) => *c,
         };
         match c {
             ' ' => self.whitespace(),
-            _ => self.text(),
+            '('|')'|'{'|'}'|'['|']'|':'|';'|'-'|'<'|'>'|'!'|'?'|'='|'.' => self.punctuation(c),
+            '"' => self.string(),
+            _ => self.name(),
         }
     }
 
@@ -78,16 +84,50 @@ impl<'a> Scanner<'a> {
         Token::WhiteSpace(n)
     }
 
-    fn text(&mut self) -> Token {
+    fn punctuation(&mut self, c: char) -> Token {
+        self.advance();
+        Token::Punctuation(c)
+    }
+
+    fn string(&mut self) -> Token {
         let mut buf = String::new();
-        while let Some(c) = self.peek() {
-            if *c == ' ' || *c == '\n' {
+        buf.push(self.advance().unwrap()); // push '"' to buf
+
+        while let Some(&c) = self.peek() {
+            if c == '"' || c == '\n' {
                 break;
             }
-            buf.push(*c);
+            buf.push(c);
             self.advance();
         }
-        Token::Text(buf)
+
+        buf.push(self.advance().unwrap()); // push '"' to buf
+        Token::String(buf)
+    }
+
+    fn name(&mut self) -> Token {
+        let mut buf = String::new();
+        while let Some(&c) = self.peek() {
+            if c == ' ' || c == '\n' || !Self::is_valid_for_identifier(c) {
+                break;
+            }
+            buf.push(c);
+            self.advance();
+        }
+        if Self::is_keyword(&buf) {
+            Token::Keyword(buf)
+        } else {
+            Token::Name(buf)
+        }
+    }
+
+    fn is_valid_for_identifier(c: char) -> bool {
+        c.is_alphanumeric() || c == '_'
+    }
+
+    fn is_keyword(name: &String) -> bool {
+        let keywords: HashSet<&str> = HashSet::<_>::from_iter(["fn", "mod", "use", "let", "for", "in"]);
+        keywords.contains(name.as_str())
     }
 
     fn advance(&mut self) -> Option<char> {
