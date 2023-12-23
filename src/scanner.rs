@@ -140,7 +140,8 @@ impl<'a> Scanner<'a> {
     }
 
     fn is_keyword(name: &String) -> bool {
-        let keywords: HashSet<&str> = HashSet::<_>::from_iter(["fn", "mod", "use", "let", "for", "in"]);
+        let keywords: HashSet<&str> =
+            HashSet::<_>::from_iter(["fn", "mod", "use", "let", "for", "in"]);
         keywords.contains(name.as_str())
     }
 
