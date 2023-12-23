@@ -14,7 +14,6 @@ enum Token {
     Eof,
 }
 
-
 #[derive(Debug)]
 pub(crate) struct Line {
     tokens: Vec<Token>,
@@ -70,7 +69,8 @@ impl<'a> Scanner<'a> {
         };
         match c {
             ' ' => self.whitespace(),
-            '('|')'|'{'|'}'|'['|']'|':'|';'|'-'|'<'|'>'|'!'|'?'|'='|'.' => self.punctuation(c),
+            '(' | ')' | '{' | '}' | '[' | ']' | ':' | ';' | ',' | '+' | '-' | '*' | '/' | '<'
+            | '>' | '!' | '?' | '=' | '.' | '#' | '\'' | '\\' | '&' | '|' => self.punctuation(c),
             '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.number(),
             '"' => self.string(),
             _ => self.name(),
