@@ -6,6 +6,7 @@ use std::str::Chars;
 enum Token {
     WhiteSpace(usize),
     Punctuation(char),
+    Number(String),
     String(String),
     Name(String),
     Keyword(String),
@@ -70,6 +71,7 @@ impl<'a> Scanner<'a> {
         match c {
             ' ' => self.whitespace(),
             '('|')'|'{'|'}'|'['|']'|':'|';'|'-'|'<'|'>'|'!'|'?'|'='|'.' => self.punctuation(c),
+            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.number(),
             '"' => self.string(),
             _ => self.name(),
         }
@@ -87,6 +89,18 @@ impl<'a> Scanner<'a> {
     fn punctuation(&mut self, c: char) -> Token {
         self.advance();
         Token::Punctuation(c)
+    }
+
+    fn number(&mut self) -> Token {
+        let mut buf = String::new();
+        while let Some(&c) = self.peek() {
+            if !c.is_digit(10) && c != '.' {
+                break;
+            }
+            buf.push(c);
+            self.advance();
+        }
+        Token::Number(buf)
     }
 
     fn string(&mut self) -> Token {
