@@ -3,7 +3,7 @@ use std::iter::Peekable;
 use std::str::Chars;
 
 #[derive(Debug)]
-enum Token {
+pub(crate) enum Token {
     Whitespace(usize),
     Punctuation(String),
     Number(String),
@@ -16,7 +16,7 @@ enum Token {
 
 #[derive(Debug)]
 pub(crate) struct Line {
-    tokens: Vec<Token>,
+    pub(crate) tokens: Vec<Token>,
 }
 
 impl Line {
@@ -69,9 +69,9 @@ impl<'a> Scanner<'a> {
         };
         match c {
             ' ' => self.whitespace(),
+            '"' => self.string(),
             c if Self::is_punctuation(c) => self.punctuation(),
             c if c.is_digit(10) => self.number(),
-            '"' => self.string(),
             _ => self.name(),
         }
     }
@@ -154,8 +154,62 @@ impl<'a> Scanner<'a> {
     }
 
     fn is_keyword(name: &String) -> bool {
-        let keywords: HashSet<&str> =
-            HashSet::<_>::from_iter(["fn", "mod", "use", "let", "for", "in"]);
+        let keywords: HashSet<&str> = HashSet::<_>::from_iter([
+            "Self",
+            "abstract",
+            "as",
+            "async",
+            "await",
+            "become",
+            "box",
+            "break",
+            "const",
+            "continue",
+            "crate",
+            "do",
+            "dyn",
+            "dyn",
+            "else",
+            "enum",
+            "extern",
+            "false",
+            "final",
+            "fn",
+            "for",
+            "if",
+            "impl",
+            "in",
+            "let",
+            "loop",
+            "macro",
+            "macro_rules",
+            "match",
+            "mod",
+            "move",
+            "mut",
+            "override",
+            "priv",
+            "pub",
+            "ref",
+            "return",
+            "self",
+            "static",
+            "struct",
+            "super",
+            "trait",
+            "true",
+            "try",
+            "type",
+            "typeof",
+            "union",
+            "unsafe",
+            "unsized",
+            "use",
+            "virtual",
+            "where",
+            "while",
+            "yield",
+        ]);
         keywords.contains(name.as_str())
     }
 
