@@ -147,9 +147,9 @@ impl<'a> Scanner<'a> {
 
     fn is_punctuation(c: char) -> bool {
         match c {
-            '(' | ')' | '{' | '}' | '[' | ']' | ':' | ';' | ',' | '+' | '-' | '*' | '/' | '<'
-            | '>' | '!' | '?' | '=' | '.' | '#' | '\'' | '\\' | '&' | '|' => true,
-            _ => false,
+            c if c.is_alphanumeric() => false,
+            c if c.is_ascii_whitespace() => false,
+            _ => true,
         }
     }
 
