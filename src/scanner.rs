@@ -5,7 +5,7 @@ use std::str::Chars;
 #[derive(Debug)]
 enum Token {
     WhiteSpace(usize),
-    Punctuation(char),
+    Punctuation(String),
     Number(String),
     String(String),
     Name(String),
@@ -69,8 +69,7 @@ impl<'a> Scanner<'a> {
         };
         match c {
             ' ' => self.whitespace(),
-            '(' | ')' | '{' | '}' | '[' | ']' | ':' | ';' | ',' | '+' | '-' | '*' | '/' | '<'
-            | '>' | '!' | '?' | '=' | '.' | '#' | '\'' | '\\' | '&' | '|' => self.punctuation(c),
+            c if Self::is_punctuation(c) => self.punctuation(),
             '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.number(),
             '"' => self.string(),
             _ => self.name(),
@@ -86,9 +85,16 @@ impl<'a> Scanner<'a> {
         Token::WhiteSpace(n)
     }
 
-    fn punctuation(&mut self, c: char) -> Token {
-        self.advance();
-        Token::Punctuation(c)
+    fn punctuation(&mut self) -> Token {
+        let mut buf = String::new();
+        while let Some(&c) = self.peek() {
+            if !Self::is_punctuation(c) {
+                break;
+            }
+            buf.push(c);
+            self.advance();
+        }
+        Token::Punctuation(buf)
     }
 
     fn number(&mut self) -> Token {
@@ -137,6 +143,14 @@ impl<'a> Scanner<'a> {
 
     fn is_valid_for_identifier(c: char) -> bool {
         c.is_alphanumeric() || c == '_'
+    }
+
+    fn is_punctuation(c: char) -> bool {
+        match c {
+            '(' | ')' | '{' | '}' | '[' | ']' | ':' | ';' | ',' | '+' | '-' | '*' | '/' | '<'
+            | '>' | '!' | '?' | '=' | '.' | '#' | '\'' | '\\' | '&' | '|' => true,
+            _ => false,
+        }
     }
 
     fn is_keyword(name: &String) -> bool {
