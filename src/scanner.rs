@@ -4,7 +4,7 @@ use std::str::Chars;
 
 #[derive(Debug)]
 enum Token {
-    WhiteSpace(usize),
+    Whitespace(usize),
     Punctuation(String),
     Number(String),
     String(String),
@@ -82,7 +82,7 @@ impl<'a> Scanner<'a> {
             n += 1;
             self.advance();
         }
-        Token::WhiteSpace(n)
+        Token::Whitespace(n)
     }
 
     fn punctuation(&mut self) -> Token {
