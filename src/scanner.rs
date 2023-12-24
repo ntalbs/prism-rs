@@ -70,7 +70,7 @@ impl<'a> Scanner<'a> {
         match c {
             ' ' => self.whitespace(),
             c if Self::is_punctuation(c) => self.punctuation(),
-            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.number(),
+            c if c.is_digit(10) => self.number(),
             '"' => self.string(),
             _ => self.name(),
         }
