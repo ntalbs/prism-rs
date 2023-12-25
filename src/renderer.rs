@@ -1,4 +1,4 @@
-use crate::color::Color;
+use colorust::Color;
 use crate::scanner::{Line, Token};
 
 pub fn render_to_console(input: Vec<Line>) {

@@ -1,4 +1,3 @@
-mod color;
 mod renderer;
 mod scanner;
 
