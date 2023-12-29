@@ -111,17 +111,22 @@ impl<'a> Scanner<'a> {
 
     fn string(&mut self) -> Token {
         let mut buf = String::new();
-        buf.push(self.advance().unwrap()); // push '"' to buf
+        let mut prev_char: char = '\n';
+        buf.push(self.advance().unwrap());     // push '"' to buf
 
         while let Some(&c) = self.peek() {
-            if c == '"' || c == '\n' {
-                break;
+            match c {
+                '\n' => break,
+                '"' if prev_char != '\\' => break, // if prev_char=='\\', then escaped
+                _ => {
+                    buf.push(c);
+                    prev_char = c;
+                    self.advance();
+                }
             }
-            buf.push(c);
-            self.advance();
         }
 
-        buf.push(self.advance().unwrap()); // push '"' to buf
+        buf.push(self.advance().unwrap());     // push '"' to buf
         Token::String(buf)
     }
 
