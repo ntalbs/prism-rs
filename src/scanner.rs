@@ -71,7 +71,7 @@ impl<'a> Scanner<'a> {
             ' ' => self.whitespace(),
             '"' => self.string(),
             c if Self::is_punctuation(c) => self.punctuation(),
-            c if c.is_digit(10) => self.number(),
+            c if c.is_ascii_digit() => self.number(),
             _ => self.name(),
         }
     }
@@ -100,7 +100,7 @@ impl<'a> Scanner<'a> {
     fn number(&mut self) -> Token {
         let mut buf = String::new();
         while let Some(&c) = self.peek() {
-            if !c.is_digit(10) && c != '.' {
+            if !c.is_ascii_digit() && c != '.' {
                 break;
             }
             buf.push(c);
@@ -153,7 +153,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn is_keyword(name: &String) -> bool {
+    fn is_keyword(name: &str) -> bool {
         let keywords: HashSet<&str> = HashSet::<_>::from_iter([
             "Self",
             "abstract",
@@ -210,7 +210,7 @@ impl<'a> Scanner<'a> {
             "while",
             "yield",
         ]);
-        keywords.contains(name.as_str())
+        keywords.contains(name)
     }
 
     fn advance(&mut self) -> Option<char> {
