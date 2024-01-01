@@ -29,7 +29,7 @@ impl Line {
     }
 }
 
-pub(crate) struct Scanner<'a> {
+pub struct Scanner<'a> {
     iter: Peekable<Chars<'a>>,
 }
 
