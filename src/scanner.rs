@@ -55,6 +55,7 @@ impl<'a> Scanner<'a> {
                 _ => line.add_token(token),
             }
         }
+        lines.push(line);
         lines
     }
 
