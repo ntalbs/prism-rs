@@ -1,9 +1,9 @@
-use colorust::Color;
 use crate::scanner::{Line, Token};
+use colorust::Color;
 
 pub fn render_to_console(input: Vec<Line>) {
     for (linum, line) in input.iter().enumerate() {
-        print!("{:03} ", linum+1);
+        print!("{:03} ", linum + 1);
         for token in &line.tokens {
             print!("{}", render_token_to_console(token));
         }

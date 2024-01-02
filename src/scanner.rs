@@ -112,7 +112,7 @@ impl<'a> Scanner<'a> {
     fn string(&mut self) -> Token {
         let mut buf = String::new();
         let mut prev_char: char = '\n';
-        buf.push(self.advance().unwrap());     // push '"' to buf
+        buf.push(self.advance().unwrap()); // push '"' to buf
 
         while let Some(&c) = self.peek() {
             match c {
@@ -126,7 +126,7 @@ impl<'a> Scanner<'a> {
             }
         }
 
-        buf.push(self.advance().unwrap());     // push '"' to buf
+        buf.push(self.advance().unwrap()); // push '"' to buf
         Token::String(buf)
     }
 
