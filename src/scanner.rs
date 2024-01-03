@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::iter::Peekable;
 use std::str::Chars;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub(crate) enum Token {
     Whitespace(usize),
     Punctuation(String),
@@ -229,5 +229,33 @@ impl<'a> Scanner<'a> {
 
     fn is_at_end(&mut self) -> bool {
         self.peek().is_none()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::scanner::{Scanner, Token};
+
+    #[test]
+    fn test_single_line() {
+        let source = "let a = 10;";
+        
+        let mut scanner = Scanner::new(source);
+        let scanned = scanner.scan();
+
+        assert_eq!(scanned.len(), 1);
+        assert_eq!(
+            vec![
+                Token::Keyword("let".to_string()),
+                Token::Whitespace(1),
+                Token::Name("a".to_string()),
+                Token::Whitespace(1),
+                Token::Punctuation("=".to_string()),
+                Token::Whitespace(1),
+                Token::Number("10".to_string()),
+                Token::Punctuation(";".to_string())
+            ],
+            scanned[0].tokens
+        );
     }
 }

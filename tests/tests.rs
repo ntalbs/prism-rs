@@ -9,3 +9,16 @@ fn test() -> io::Result<()> {
     prism.render_to_console();
     Ok(())
 }
+
+#[test]
+fn test_block_string() {
+    let source = r#"
+    fn main() {
+        let a = 10;
+        let b = 20;
+        println!("a + b = {}", a + b);
+    }
+    "#;
+    let mut prism = Prism::new(source);
+    prism.render_to_console();
+}
