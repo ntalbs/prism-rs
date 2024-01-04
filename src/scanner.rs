@@ -238,9 +238,9 @@ mod tests {
 
     #[test]
     fn test_single_line() {
-        let source = "let a = 10;";
+        let input = "let a = 10;";
         
-        let mut scanner = Scanner::new(source);
+        let mut scanner = Scanner::new(input);
         let scanned = scanner.scan();
 
         assert_eq!(scanned.len(), 1);
