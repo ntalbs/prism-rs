@@ -126,8 +126,12 @@ impl<'a> Scanner<'a> {
                 }
             }
         }
-
-        buf.push(self.advance().unwrap()); // push '"' to buf
+        match self.advance() {
+            Some(c) if c == '\n' => (), // non-terminated string
+            Some(c) if c == '"' => buf.push('"'),
+            Some(_) => (), // shouldn't come here
+            None => () // EOF, do nothing
+        }
         Token::String(buf)
     }
 
