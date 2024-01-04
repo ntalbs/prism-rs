@@ -155,6 +155,7 @@ impl<'a> Scanner<'a> {
         match c {
             c if c.is_alphanumeric() => false,
             c if c.is_ascii_whitespace() => false,
+            c if c == '"' => false,
             _ => true,
         }
     }
