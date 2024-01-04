@@ -258,4 +258,24 @@ mod tests {
             scanned[0].tokens
         );
     }
+
+    #[test]
+    fn test_str_argument() {
+        let input = "println!(\"hello, world\");";
+
+        let mut scanner = Scanner::new(input);
+        let scanned = scanner.scan();
+        println!("{scanned:?}");
+
+        assert_eq!(scanned.len(), 1);
+        assert_eq!(
+            vec![
+                Token::Name("println".to_string()),
+                Token::Punctuation("!(".to_string()),
+                Token::String("\"hello, world\"".to_string()),
+                Token::Punctuation(");".to_string()),
+            ],
+            scanned[0].tokens
+        );
+    }
 }
