@@ -241,46 +241,40 @@ impl<'a> Scanner<'a> {
 mod tests {
     use crate::scanner::{Scanner, Token};
 
-    #[test]
-    fn test_single_line() {
-        let input = "let a = 10;";
-        
-        let mut scanner = Scanner::new(input);
-        let scanned = scanner.scan();
-
-        assert_eq!(scanned.len(), 1);
-        assert_eq!(
-            vec![
-                Token::Keyword("let".to_string()),
-                Token::Whitespace(1),
-                Token::Name("a".to_string()),
-                Token::Whitespace(1),
-                Token::Punctuation("=".to_string()),
-                Token::Whitespace(1),
-                Token::Number("10".to_string()),
-                Token::Punctuation(";".to_string())
-            ],
-            scanned[0].tokens
-        );
+    macro_rules! testln {
+        ($name:ident, $input:expr, $expted:expr) => {
+            #[test]
+            fn $name() {
+                let mut scanner = Scanner::new($input);
+                let scanned = scanner.scan();
+                assert_eq!($expted, scanned[0].tokens);
+            }
+        }
     }
 
-    #[test]
-    fn test_str_argument() {
-        let input = "println!(\"hello, world\");";
+    testln!(
+        single_line_let,
+        "let a = 10;", 
+        vec![
+            Token::Keyword("let".to_string()),
+            Token::Whitespace(1),
+            Token::Name("a".to_string()),
+            Token::Whitespace(1),
+            Token::Punctuation("=".to_string()),
+            Token::Whitespace(1),
+            Token::Number("10".to_string()),
+            Token::Punctuation(";".to_string())
+        ]
+    );
 
-        let mut scanner = Scanner::new(input);
-        let scanned = scanner.scan();
-        println!("{scanned:?}");
-
-        assert_eq!(scanned.len(), 1);
-        assert_eq!(
-            vec![
-                Token::Name("println".to_string()),
-                Token::Punctuation("!(".to_string()),
-                Token::String("\"hello, world\"".to_string()),
-                Token::Punctuation(");".to_string()),
-            ],
-            scanned[0].tokens
-        );
-    }
+    testln!(
+        str_argument,
+        "println!(\"hello, world\");",
+        vec![
+            Token::Name("println".to_string()),
+            Token::Punctuation("!(".to_string()),
+            Token::String("\"hello, world\"".to_string()),
+            Token::Punctuation(");".to_string()),
+        ]
+    );
 }
