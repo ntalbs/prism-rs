@@ -242,12 +242,12 @@ mod tests {
     use crate::scanner::{Scanner, Token};
 
     macro_rules! testln {
-        ($name:ident, $input:expr, $expted:expr) => {
+        ($name:ident, $input:expr, $expected:expr) => {
             #[test]
             fn $name() {
                 let mut scanner = Scanner::new($input);
                 let scanned = scanner.scan();
-                assert_eq!($expted, scanned[0].tokens);
+                assert_eq!(scanned[0].tokens, $expected);
             }
         }
     }
