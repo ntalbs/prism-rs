@@ -127,8 +127,8 @@ impl<'a> Scanner<'a> {
             }
         }
         match self.advance() {
-            Some(c) if c == '\n' => (), // non-terminated string
-            Some(c) if c == '"' => buf.push('"'),
+            Some('\n') => (), // non-terminated string
+            Some('"') => buf.push('"'),
             Some(_) => (), // shouldn't come here
             None => () // EOF, do nothing
         }
@@ -159,7 +159,7 @@ impl<'a> Scanner<'a> {
         match c {
             c if c.is_alphanumeric() => false,
             c if c.is_ascii_whitespace() => false,
-            c if c == '"' => false,
+            '"' => false,
             _ => true,
         }
     }
