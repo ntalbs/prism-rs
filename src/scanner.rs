@@ -277,4 +277,12 @@ mod tests {
             Token::Punctuation(");".to_string()),
         ]
     );
+
+    testln!(
+        str_escaped_double_quotation,
+        r#""{\"a\": 10}""#,
+        vec![
+            Token::String("\"{\\\"a\\\": 10}\"".to_string()),
+        ]
+    );
 }
