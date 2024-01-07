@@ -252,18 +252,54 @@ mod tests {
         }
     }
 
+    macro_rules! ws {
+        ($input:literal) => {
+            Token::Whitespace($input)
+        };
+    }
+
+    macro_rules! pt {
+        ($input:literal) => {
+            Token::Punctuation($input.to_string())
+        };
+    }
+
+    macro_rules! nu {
+        ($input:literal) => {
+            Token::Number($input.to_string())
+        };
+    }
+
+    macro_rules! st {
+        ($input:literal) => {
+            Token::String($input.to_string())
+        };
+    }
+
+    macro_rules! nm {
+        ($input:literal) => {
+            Token::Name($input.to_string())
+        };
+    }
+
+    macro_rules! kw {
+        ($input:literal) => {
+            Token::Keyword($input.to_string())
+        };
+    }
+
     testln!(
         single_line_let,
-        "let a = 10;", 
+        "let a = 10;",
         vec![
-            Token::Keyword("let".to_string()),
-            Token::Whitespace(1),
-            Token::Name("a".to_string()),
-            Token::Whitespace(1),
-            Token::Punctuation("=".to_string()),
-            Token::Whitespace(1),
-            Token::Number("10".to_string()),
-            Token::Punctuation(";".to_string())
+            kw!("let"),
+            ws!(1),
+            nm!("a"),
+            ws!(1),
+            pt!("="),
+            ws!(1),
+            nu!("10"),
+            pt!(";")
         ]
     );
 
@@ -271,10 +307,10 @@ mod tests {
         str_argument,
         "println!(\"hello, world\");",
         vec![
-            Token::Name("println".to_string()),
-            Token::Punctuation("!(".to_string()),
-            Token::String("\"hello, world\"".to_string()),
-            Token::Punctuation(");".to_string()),
+            nm!("println"),
+            pt!("!("),
+            st!("\"hello, world\""),
+            pt!(");"),
         ]
     );
 
@@ -282,7 +318,7 @@ mod tests {
         str_escaped_double_quotation,
         r#""{\"a\": 10}""#,
         vec![
-            Token::String("\"{\\\"a\\\": 10}\"".to_string()),
+            st!("\"{\\\"a\\\": 10}\""),
         ]
     );
 }
