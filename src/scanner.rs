@@ -241,6 +241,7 @@ impl<'a> Scanner<'a> {
 mod tests {
     use crate::scanner::{Scanner, Token};
 
+    /// macro for single line input
     macro_rules! testln {
         ($name:ident, $input:expr, $expected:expr) => {
             #[test]
