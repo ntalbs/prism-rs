@@ -127,7 +127,7 @@ impl<'a> Scanner<'a> {
             Some('\n') => (), // non-terminated string
             Some('"') => buf.push('"'),
             Some(_) => (), // shouldn't come here
-            None => () // EOF, do nothing
+            None => (),    // EOF, do nothing
         }
         Token::String(buf)
     }
@@ -248,7 +248,7 @@ mod tests {
                 let scanned = scanner.scan();
                 assert_eq!(scanned[0].tokens, $expected);
             }
-        }
+        };
     }
 
     macro_rules! ws {
@@ -316,8 +316,6 @@ mod tests {
     testln!(
         str_escaped_double_quotation,
         r#""{\"a\": 10}""#,
-        vec![
-            st!("\"{\\\"a\\\": 10}\""),
-        ]
+        vec![st!("\"{\\\"a\\\": 10}\"")]
     );
 }
