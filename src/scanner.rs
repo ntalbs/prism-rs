@@ -31,12 +31,14 @@ impl Line {
 
 pub struct Scanner<'a> {
     iter: Peekable<Chars<'a>>,
+    current_char: Option<char>,
 }
 
 impl<'a> Scanner<'a> {
     pub(crate) fn new(input: &'a str) -> Self {
         Self {
             iter: input.chars().peekable(),
+            current_char: Option::None,
         }
     }
 
@@ -45,7 +47,7 @@ impl<'a> Scanner<'a> {
         let mut line = Line::new();
 
         while !self.is_at_end() {
-            let token = self.scan_token();
+            let token = self.next_token();
             match token {
                 Token::Eof => break,
                 Token::Eol => {
@@ -59,26 +61,21 @@ impl<'a> Scanner<'a> {
         lines
     }
 
-    fn scan_token(&mut self) -> Token {
-        let c = match self.peek() {
-            None => return Token::Eof,
-            Some(&'\n') => {
-                self.advance();
-                return Token::Eol;
-            }
-            Some(c) => *c,
-        };
-        match c {
-            ' ' => self.whitespace(),
-            '"' => self.string(),
-            c if Self::is_punctuation(c) => self.punctuation(),
-            c if c.is_ascii_digit() => self.number(),
-            _ => self.name(),
+    fn next_token(&mut self) -> Token {
+        self.current_char = self.advance();
+        match self.current_char {
+            Some('\n') => Token::Eol,
+            Some(' ') => self.whitespace(),
+            Some('"') => self.string(),
+            Some(c) if Self::is_punctuation(c) => self.punctuation(),
+            Some(c) if c.is_ascii_digit() => self.number(),
+            Some(_) => self.name(),
+            None => Token::Eof,
         }
     }
 
     fn whitespace(&mut self) -> Token {
-        let mut n: usize = 0;
+        let mut n: usize = 1;
         while let Some(' ') = self.peek() {
             n += 1;
             self.advance();
@@ -87,7 +84,8 @@ impl<'a> Scanner<'a> {
     }
 
     fn punctuation(&mut self) -> Token {
-        let mut buf = String::new();
+        let mut buf = String::from(self.current_char.unwrap());
+
         while let Some(&c) = self.peek() {
             if !Self::is_punctuation(c) {
                 break;
@@ -99,9 +97,9 @@ impl<'a> Scanner<'a> {
     }
 
     fn number(&mut self) -> Token {
-        let mut buf = String::new();
+        let mut buf = String::from(self.current_char.unwrap());
         while let Some(&c) = self.peek() {
-            if !c.is_ascii_digit() && c != '.' {
+            if !c.is_ascii_digit() && c != '.' && c != '_' {
                 break;
             }
             buf.push(c);
@@ -111,10 +109,9 @@ impl<'a> Scanner<'a> {
     }
 
     fn string(&mut self) -> Token {
-        let mut buf = String::new();
-        let mut prev_char: char = '\n';
-        buf.push(self.advance().unwrap()); // push '"' to buf
+        let mut buf = String::from("\"");
 
+        let mut prev_char: char = '\n';
         while let Some(&c) = self.peek() {
             match c {
                 '\n' => break,
@@ -136,7 +133,8 @@ impl<'a> Scanner<'a> {
     }
 
     fn name(&mut self) -> Token {
-        let mut buf = String::new();
+        let mut buf = String::from(self.current_char.unwrap());
+
         while let Some(&c) = self.peek() {
             if c == ' ' || c == '\n' || !Self::is_valid_for_identifier(c) {
                 break;
