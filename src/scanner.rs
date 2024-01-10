@@ -287,6 +287,17 @@ mod tests {
         };
     }
 
+    testln!(single_token_ws, "    ", vec![ws!(4)]);
+    testln!(single_token_pt, "+=", vec![pt!("+=")]);
+    testln!(single_token_nu_1, "12345", vec![nu!("12345")]);
+    testln!(single_token_nu_2, "12.345", vec![nu!("12.345")]);
+    testln!(single_token_nu_3, "12_345", vec![nu!("12_345")]);
+    testln!(single_token_st, "\"hello\"", vec!(st!("\"hello\"")));
+    testln!(single_token_kw_1, "fn", vec![kw!("fn")]);
+    testln!(single_token_kw_3, "self", vec![kw!("self")]);
+    testln!(single_token_kw_2, "Self", vec![kw!("Self")]);
+    testln!(single_token_nm, "name", vec![nm!("name")]);
+
     testln!(
         single_line_let,
         "let a = 10;",
