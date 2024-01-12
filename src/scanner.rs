@@ -8,6 +8,8 @@ pub(crate) enum Token {
     Punctuation(String),
     Number(String),
     String(String),
+    LineComment(String),
+    BlockComment(String),
     Name(String),
     Keyword(String),
     Eol,
@@ -67,6 +69,12 @@ impl<'a> Scanner<'a> {
             Some('\n') => Token::Eol,
             Some(' ') => self.whitespace(),
             Some('"') => self.string(),
+            Some('/') => match self.peek() {
+                Some('/') => self.line_comment(),
+                Some('*') => self.block_comment(),
+                Some(_) => self.punctuation(),
+                None => Token::Eof,
+            }
             Some(c) if Self::is_punctuation(c) => self.punctuation(),
             Some(c) if c.is_ascii_digit() => self.number(),
             Some(_) => self.name(),
@@ -130,6 +138,23 @@ impl<'a> Scanner<'a> {
             None => (),    // EOF, do nothing
         }
         Token::String(buf)
+    }
+
+    fn line_comment(&mut self) -> Token {
+        let mut buf = String::from(self.current_char.unwrap());
+
+        while let Some(&c) = self.peek() {
+            if c == '\n' {
+                break;
+            }
+            buf.push(c);
+            self.advance();
+        }
+        Token::LineComment(buf)
+    }
+
+    fn block_comment(&mut self) -> Token {
+        Token::BlockComment("".to_string())
     }
 
     fn name(&mut self) -> Token {
@@ -275,6 +300,12 @@ mod tests {
         };
     }
 
+    macro_rules! lc {
+        ($input:literal) => {
+            Token::LineComment($input.to_string())
+        };
+    }
+
     macro_rules! nm {
         ($input:literal) => {
             Token::Name($input.to_string())
@@ -293,6 +324,7 @@ mod tests {
     testln!(single_token_nu_2, "12.345", vec![nu!("12.345")]);
     testln!(single_token_nu_3, "12_345", vec![nu!("12_345")]);
     testln!(single_token_st, "\"hello\"", vec!(st!("\"hello\"")));
+    testln!(single_token_lc, "// comment", vec!(lc!("// comment")));
     testln!(single_token_kw_1, "fn", vec![kw!("fn")]);
     testln!(single_token_kw_3, "self", vec![kw!("self")]);
     testln!(single_token_kw_2, "Self", vec![kw!("Self")]);

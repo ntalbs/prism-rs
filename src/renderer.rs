@@ -17,6 +17,8 @@ fn render_token_to_console(token: &Token) -> String {
         Token::Punctuation(s) => s.red(),
         Token::Number(s) => s.yellow(),
         Token::String(s) => s.green(),
+        Token::LineComment(s) => s.bright_yellow(),
+        Token::BlockComment(s) => s.bright_green(),
         Token::Name(s) => s.white(),
         Token::Keyword(s) => s.bright_blue(),
         _ => "".to_string(),
