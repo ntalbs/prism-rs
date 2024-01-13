@@ -74,7 +74,7 @@ impl<'a> Scanner<'a> {
                 Some('*') => self.block_comment(),
                 Some(_) => self.punctuation(),
                 None => Token::Eof,
-            }
+            },
             Some(c) if Self::is_punctuation(c) => self.punctuation(),
             Some(c) if c.is_ascii_digit() => self.number(),
             Some(_) => self.name(),
