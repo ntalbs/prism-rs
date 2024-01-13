@@ -5,6 +5,7 @@ use std::str::Chars;
 #[derive(Debug, PartialEq)]
 pub(crate) enum Token {
     Whitespace(String),
+    NewLine(),
     Punctuation(String),
     Number(String),
     String(String),
@@ -44,7 +45,8 @@ impl<'a> Scanner<'a> {
     fn next_token(&mut self) -> Token {
         self.current_char = self.advance();
         match self.current_char {
-            Some(' ') | Some('\n') => self.whitespace(),
+            Some(' ') => self.whitespace(),
+            Some('\n') => self.newline(),
             Some('"') => self.string(),
             Some('/') => match self.peek() {
                 Some('/') => self.line_comment(),
@@ -61,15 +63,15 @@ impl<'a> Scanner<'a> {
 
     fn whitespace(&mut self) -> Token {
         let mut buf = String::from(self.current_char.unwrap());
-        while let Some(&c) = self.peek() {
-            if c == ' ' || c == '\n' {
-                buf.push(c);
-            } else {
-                break;
-            }
+        while let Some(' ') = self.peek() {
+            buf.push(' ');
             self.advance();
         }
         Token::Whitespace(buf)
+    }
+
+    fn newline(&mut self) -> Token {
+        Token::NewLine()
     }
 
     fn punctuation(&mut self) -> Token {

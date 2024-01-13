@@ -10,6 +10,7 @@ pub fn render_to_console(input: Vec<Token>) {
 fn render_token_to_console(token: &Token) -> String {
     match token {
         Token::Whitespace(s) => s.to_string(),
+        Token::NewLine() => "\n".to_string(),
         Token::Punctuation(s) => s.red(),
         Token::Number(s) => s.yellow(),
         Token::String(s) => s.green(),
