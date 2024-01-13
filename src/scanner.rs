@@ -4,7 +4,7 @@ use std::str::Chars;
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Token {
-    Whitespace(usize),
+    Whitespace(String),
     Punctuation(String),
     Number(String),
     String(String),
@@ -12,23 +12,7 @@ pub(crate) enum Token {
     BlockComment(String),
     Name(String),
     Keyword(String),
-    Eol,
     Eof,
-}
-
-#[derive(Debug)]
-pub(crate) struct Line {
-    pub(crate) tokens: Vec<Token>,
-}
-
-impl Line {
-    fn new() -> Self {
-        Self { tokens: Vec::new() }
-    }
-
-    fn add_token(&mut self, token: Token) {
-        self.tokens.push(token);
-    }
 }
 
 pub struct Scanner<'a> {
@@ -44,30 +28,23 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    pub(crate) fn scan(&mut self) -> Vec<Line> {
-        let mut lines: Vec<Line> = Vec::new();
-        let mut line = Line::new();
+    pub(crate) fn scan(&mut self) -> Vec<Token> {
+        let mut tokens: Vec<Token> = Vec::new();
 
         while !self.is_at_end() {
             let token = self.next_token();
             match token {
                 Token::Eof => break,
-                Token::Eol => {
-                    lines.push(line);
-                    line = Line::new();
-                }
-                _ => line.add_token(token),
+                _ => tokens.push(token),
             }
         }
-        lines.push(line);
-        lines
+        tokens
     }
 
     fn next_token(&mut self) -> Token {
         self.current_char = self.advance();
         match self.current_char {
-            Some('\n') => Token::Eol,
-            Some(' ') => self.whitespace(),
+            Some(' ') | Some('\n') => self.whitespace(),
             Some('"') => self.string(),
             Some('/') => match self.peek() {
                 Some('/') => self.line_comment(),
@@ -83,12 +60,16 @@ impl<'a> Scanner<'a> {
     }
 
     fn whitespace(&mut self) -> Token {
-        let mut n: usize = 1;
-        while let Some(' ') = self.peek() {
-            n += 1;
+        let mut buf = String::from(self.current_char.unwrap());
+        while let Some(&c) = self.peek() {
+            if c == ' ' || c == '\n' {
+                buf.push(c);
+            } else {
+                break;
+            }
             self.advance();
         }
-        Token::Whitespace(n)
+        Token::Whitespace(buf)
     }
 
     fn punctuation(&mut self) -> Token {
@@ -270,15 +251,15 @@ mod tests {
             #[test]
             fn $name() {
                 let mut scanner = Scanner::new($input);
-                let scanned = scanner.scan();
-                assert_eq!(scanned[0].tokens, $expected);
+                let tokens = scanner.scan();
+                assert_eq!(tokens, $expected);
             }
         };
     }
 
     macro_rules! ws {
         ($input:literal) => {
-            Token::Whitespace($input)
+            Token::Whitespace($input.to_string())
         };
     }
 
@@ -318,7 +299,7 @@ mod tests {
         };
     }
 
-    testln!(single_token_ws, "    ", vec![ws!(4)]);
+    testln!(single_token_ws, "    ", vec![ws!("    ")]);
     testln!(single_token_pt, "+=", vec![pt!("+=")]);
     testln!(single_token_nu_1, "12345", vec![nu!("12345")]);
     testln!(single_token_nu_2, "12.345", vec![nu!("12.345")]);
@@ -335,11 +316,11 @@ mod tests {
         "let a = 10;",
         vec![
             kw!("let"),
-            ws!(1),
+            ws!(" "),
             nm!("a"),
-            ws!(1),
+            ws!(" "),
             pt!("="),
-            ws!(1),
+            ws!(" "),
             nu!("10"),
             pt!(";")
         ]
