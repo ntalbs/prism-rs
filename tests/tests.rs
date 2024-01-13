@@ -13,9 +13,10 @@ fn test() -> io::Result<()> {
 #[test]
 fn test_block_string() {
     let source = r#"
-    fn main() {
-        let a = 10;
-        let b = 20;
+    // line comment
+    fn main() {     // main
+        let a = 10; // a = 10
+        let b = 20; // b = 20
         println!("a + b = {}", a + b);
     }
     "#;
