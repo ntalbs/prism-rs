@@ -5,8 +5,12 @@ use prism_rs::Prism;
 #[test]
 fn test() -> io::Result<()> {
     let source = fs::read_to_string("./src/lib.rs")?;
-    let mut prism = Prism::new(&source);
-    prism.render_to_console();
+
+    println!(">>> Without line numbers");
+    Prism::new(&source).render_to_console();
+
+    println!(">>> With line numbers");
+    Prism::new(&source).render_to_console_with_line_num();
     Ok(())
 }
 
@@ -20,6 +24,10 @@ fn test_block_string() {
         println!("a + b = {}", a + b);
     }
     "#;
-    let mut prism = Prism::new(source);
-    prism.render_to_console();
+
+    println!(">>> Without line numbers");
+    Prism::new(source).render_to_console();
+
+    println!(">>> With line numbers");
+    Prism::new(source).render_to_console_with_line_num();
 }

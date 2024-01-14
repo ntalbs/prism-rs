@@ -1,7 +1,7 @@
 mod renderer;
 mod scanner;
 
-use renderer::render_to_console;
+use renderer::{render_to_console, render_to_console_with_line_num};
 use scanner::Scanner;
 
 pub struct Prism<'a> {
@@ -17,6 +17,11 @@ impl<'a> Prism<'a> {
 
     pub fn render_to_console(&mut self) {
         let scanned = self.scanner.scan();
-        render_to_console(scanned);
+        render_to_console(&scanned);
+    }
+
+    pub fn render_to_console_with_line_num(&mut self) {
+        let scanned = self.scanner.scan();
+        render_to_console_with_line_num(&scanned);
     }
 }
