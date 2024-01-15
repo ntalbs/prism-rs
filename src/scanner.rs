@@ -137,7 +137,19 @@ impl<'a> Scanner<'a> {
     }
 
     fn block_comment(&mut self) -> Token {
-        Token::BlockComment("".to_string())
+        let mut buf = String::from(self.current_char.unwrap());
+
+        while let Some(&c) = self.peek() {
+            buf.push(c);
+            self.current_char = self.advance();
+            if self.current_char == Some('*') && self.peek() == Some(&'/') {
+                self.current_char = self.advance();
+                buf.push('/');
+                break;
+            }
+        }
+
+        Token::BlockComment(buf)
     }
 
     fn name(&mut self) -> Token {
@@ -265,6 +277,12 @@ mod tests {
         };
     }
 
+    macro_rules! nl {
+        () => {
+            Token::NewLine()
+        };
+    }
+
     macro_rules! pt {
         ($input:literal) => {
             Token::Punctuation($input.to_string())
@@ -286,6 +304,12 @@ mod tests {
     macro_rules! lc {
         ($input:literal) => {
             Token::LineComment($input.to_string())
+        };
+    }
+
+    macro_rules! bc {
+        ($input:literal) => {
+            Token::BlockComment($input.to_string())
         };
     }
 
@@ -343,5 +367,27 @@ mod tests {
         str_escaped_double_quotation,
         r#""{\"a\": 10}""#,
         vec![st!("\"{\\\"a\\\": 10}\"")]
+    );
+
+    testln!(
+        block_comment,
+        r#"/*
+        * Block comment line 1.
+        * Block comment line 2.
+        */
+        let a = 10;"#,
+        vec![
+            bc!("/*\n        * Block comment line 1.\n        * Block comment line 2.\n        */"),
+            nl!(),
+            ws!("        "),
+            kw!("let"),
+            ws!(" "),
+            nm!("a"),
+            ws!(" "),
+            pt!("="),
+            ws!(" "),
+            nu!("10"),
+            pt!(";")
+        ]
     );
 }

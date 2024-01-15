@@ -17,7 +17,10 @@ fn test() -> io::Result<()> {
 #[test]
 fn test_block_string() {
     let source = r#"
-    // line comment
+    /*
+     * Block comment line 1.
+     * Block comment line 2.
+     */
     fn main() {     // main
         let a = 10; // a = 10
         let b = 20; // b = 20
