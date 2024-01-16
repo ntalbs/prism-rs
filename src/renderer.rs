@@ -3,7 +3,7 @@ use colorust::Color;
 
 pub fn render_to_console(input: &Vec<Token>) {
     for token in input {
-        print!("{}", render_token_to_console(&token));
+        print!("{}", render_token_to_console(token));
     }
     println!();
 }
@@ -12,7 +12,7 @@ pub fn render_to_console_with_line_num(input: &Vec<Token>) {
     let mut num: usize = 1;
     print!("{num:03} ");
     for token in input {
-        print!("{}", render_token_to_console(&token));
+        print!("{}", render_token_to_console(token));
         if *token == Token::NewLine() {
             num += 1;
             print!("{num:03} ");
