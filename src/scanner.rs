@@ -30,12 +30,28 @@ impl<'a> Scanner<'a> {
     }
 
     pub(crate) fn scan(&mut self) -> Vec<Token> {
+        fn break_by_line(str: String) -> Vec<Token> {
+            let mut bcl = str
+                .split('\n')
+                .map(|line| Token::BlockComment(line.to_string()));
+            let mut ret = Vec::new();
+            if let Some(line) = bcl.next() {
+                ret.push(line);
+            }
+            while let Some(line) = bcl.next() {
+                ret.push(Token::NewLine());
+                ret.push(line);
+            }
+            ret
+        }
+
         let mut tokens: Vec<Token> = Vec::new();
 
         while !self.is_at_end() {
             let token = self.next_token();
             match token {
                 Token::Eof => break,
+                Token::BlockComment(s) => tokens.append(&mut break_by_line(s)),
                 _ => tokens.push(token),
             }
         }
@@ -377,7 +393,13 @@ mod tests {
         */
         let a = 10;"#,
         vec![
-            bc!("/*\n        * Block comment line 1.\n        * Block comment line 2.\n        */"),
+            bc!("/*"),
+            nl!(),
+            bc!("        * Block comment line 1."),
+            nl!(),
+            bc!("        * Block comment line 2."),
+            nl!(),
+            bc!("        */"),
             nl!(),
             ws!("        "),
             kw!("let"),
