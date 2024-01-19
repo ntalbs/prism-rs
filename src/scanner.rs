@@ -38,7 +38,7 @@ impl<'a> Scanner<'a> {
             if let Some(line) = bcl.next() {
                 ret.push(line);
             }
-            while let Some(line) = bcl.next() {
+            for line in bcl {
                 ret.push(Token::NewLine());
                 ret.push(line);
             }
