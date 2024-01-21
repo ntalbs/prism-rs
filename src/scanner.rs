@@ -31,9 +31,7 @@ impl<'a> Scanner<'a> {
 
     pub(crate) fn scan(&mut self) -> Vec<Token> {
         fn break_by_line(str: String) -> Vec<Token> {
-            let mut bcl = str
-                .split('\n')
-                .map(|line| Token::BlockComment(line.into()));
+            let mut bcl = str.split('\n').map(|line| Token::BlockComment(line.into()));
             let mut ret = Vec::new();
             if let Some(line) = bcl.next() {
                 ret.push(line);
