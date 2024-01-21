@@ -23,8 +23,8 @@ pub fn render_to_console_with_line_num(input: &Vec<Token>) {
 
 fn render_token_to_console(token: &Token) -> String {
     match token {
-        Token::Whitespace(s) => s.to_string(),
-        Token::NewLine() => "\n".to_string(),
+        Token::Whitespace(s) => s.into(),
+        Token::NewLine() => "\n".into(),
         Token::Punctuation(s) => s.red(),
         Token::Number(s) => s.yellow(),
         Token::String(s) => s.green(),
@@ -32,6 +32,6 @@ fn render_token_to_console(token: &Token) -> String {
         Token::BlockComment(s) => s.bright_green(),
         Token::Name(s) => s.white(),
         Token::Keyword(s) => s.bright_blue(),
-        _ => "".to_string(),
+        _ => "".into(),
     }
 }

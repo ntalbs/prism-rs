@@ -33,7 +33,7 @@ impl<'a> Scanner<'a> {
         fn break_by_line(str: String) -> Vec<Token> {
             let mut bcl = str
                 .split('\n')
-                .map(|line| Token::BlockComment(line.to_string()));
+                .map(|line| Token::BlockComment(line.into()));
             let mut ret = Vec::new();
             if let Some(line) = bcl.next() {
                 ret.push(line);
@@ -289,7 +289,7 @@ mod tests {
 
     macro_rules! ws {
         ($input:literal) => {
-            Token::Whitespace($input.to_string())
+            Token::Whitespace($input.into())
         };
     }
 
@@ -301,43 +301,43 @@ mod tests {
 
     macro_rules! pt {
         ($input:literal) => {
-            Token::Punctuation($input.to_string())
+            Token::Punctuation($input.into())
         };
     }
 
     macro_rules! nu {
         ($input:literal) => {
-            Token::Number($input.to_string())
+            Token::Number($input.into())
         };
     }
 
     macro_rules! st {
         ($input:literal) => {
-            Token::String($input.to_string())
+            Token::String($input.into())
         };
     }
 
     macro_rules! lc {
         ($input:literal) => {
-            Token::LineComment($input.to_string())
+            Token::LineComment($input.into())
         };
     }
 
     macro_rules! bc {
         ($input:literal) => {
-            Token::BlockComment($input.to_string())
+            Token::BlockComment($input.into())
         };
     }
 
     macro_rules! nm {
         ($input:literal) => {
-            Token::Name($input.to_string())
+            Token::Name($input.into())
         };
     }
 
     macro_rules! kw {
         ($input:literal) => {
-            Token::Keyword($input.to_string())
+            Token::Keyword($input.into())
         };
     }
 
