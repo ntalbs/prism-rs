@@ -70,7 +70,7 @@ impl<'a> Scanner<'a> {
             },
             Some(c) if Self::is_punctuation(c) => self.punctuation(),
             Some(c) if c.is_ascii_digit() => self.number(),
-            Some(_) => self.name(),
+            Some(_) => self.name_or_keyword(),
             None => Token::Eof,
         }
     }
@@ -166,7 +166,7 @@ impl<'a> Scanner<'a> {
         Token::BlockComment(buf)
     }
 
-    fn name(&mut self) -> Token {
+    fn name_or_keyword(&mut self) -> Token {
         let mut buf = String::from(self.current_char.unwrap());
 
         while let Some(&c) = self.peek() {
