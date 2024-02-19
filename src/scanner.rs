@@ -1,6 +1,4 @@
-use std::collections::HashSet;
-use std::iter::Peekable;
-use std::str::Chars;
+use std::{collections::HashSet, iter::Peekable, str::Chars};
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Token {
