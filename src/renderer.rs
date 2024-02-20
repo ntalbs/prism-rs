@@ -1,24 +1,27 @@
 use crate::scanner::Token;
 use colorust::Color;
 
-pub fn render_to_console(input: &Vec<Token>) {
+pub fn render_to_console(input: &Vec<Token>) -> String {
+    let mut rendered = String::new();
     for token in input {
-        print!("{}", render_token_to_console(token));
+        rendered.push_str(&render_token_to_console(token));
     }
-    println!();
+    rendered
 }
 
-pub fn render_to_console_with_line_num(input: &Vec<Token>) {
+pub fn render_to_console_with_line_num(input: &Vec<Token>) -> String {
+    let mut rendered = String::new();
     let mut num: usize = 1;
-    print!("{num:-3} ");
+
+    rendered.push_str(&format!("{num:-3} "));
     for token in input {
-        print!("{}", render_token_to_console(token));
+        rendered.push_str(&render_token_to_console(token));
         if *token == Token::NewLine() {
             num += 1;
-            print!("{num:-3} ");
+            rendered.push_str(&format!("{num:-3} "));
         }
     }
-    println!();
+    rendered
 }
 
 fn render_token_to_console(token: &Token) -> String {

@@ -15,13 +15,13 @@ impl<'a> Prism<'a> {
         }
     }
 
-    pub fn render_to_console(&mut self) {
+    pub fn render_to_console(&mut self) -> String {
         let scanned = self.scanner.scan();
-        render_to_console(&scanned);
+        render_to_console(&scanned)
     }
 
-    pub fn render_to_console_with_line_num(&mut self) {
+    pub fn render_to_console_with_line_num(&mut self) -> String {
         let scanned = self.scanner.scan();
-        render_to_console_with_line_num(&scanned);
+        render_to_console_with_line_num(&scanned)
     }
 }

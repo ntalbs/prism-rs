@@ -8,7 +8,7 @@ fn main() -> io::Result<()> {
     for f in files {
         println!(">>> {f}");
         let source = fs::read_to_string(f)?;
-        Prism::new(&source).render_to_console_with_line_num();
+        println!("{}", Prism::new(&source).render_to_console_with_line_num());
     }
     Ok(())
 }
