@@ -9,6 +9,8 @@ fn main() -> io::Result<()> {
         println!(">>> {f}");
         let source = fs::read_to_string(f)?;
         println!("{}", Prism::new(&source).render_to_console_with_line_num());
+
+        println!("{}", Prism::new(&source).render_to_html());
     }
     Ok(())
 }
