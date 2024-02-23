@@ -26,7 +26,8 @@ pub fn render_to_console_with_line_num(input: &Vec<Token>) -> String {
 
 pub fn render_to_html(input: &Vec<Token>) -> String {
     let mut rendered = String::new();
-    rendered.push_str("<div class=\"highlight\"><pre class=\"prism\"><code class=\"language-rust\">");
+    rendered
+        .push_str("<div class=\"highlight\"><pre class=\"prism\"><code class=\"language-rust\">");
 
     for line in input.split(|t| *t == Token::NewLine()) {
         rendered.push_str("<span class=\"line\">");
