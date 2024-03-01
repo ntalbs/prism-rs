@@ -33,4 +33,7 @@ fn test_block_string() {
 
     println!(">>> With line numbers");
     println!("{}", Prism::new(source).render_to_console_with_line_num());
+
+    println!(">>> HTML");
+    println!("{}", Prism::new(source).render_to_html());
 }
