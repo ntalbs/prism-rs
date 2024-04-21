@@ -1,7 +1,7 @@
 use crate::scanner::Token;
 use colorust::Color;
 
-pub fn render_to_console(input: &Vec<Token>) -> String {
+pub fn render_to_console(input: &[Token]) -> String {
     let mut rendered = String::new();
     for token in input {
         rendered.push_str(&render_token_to_console(token));
@@ -9,7 +9,7 @@ pub fn render_to_console(input: &Vec<Token>) -> String {
     rendered
 }
 
-pub fn render_to_console_with_line_num(input: &Vec<Token>) -> String {
+pub fn render_to_console_with_line_num(input: &[Token]) -> String {
     let mut rendered = String::new();
     let mut num: usize = 1;
 
@@ -24,7 +24,7 @@ pub fn render_to_console_with_line_num(input: &Vec<Token>) -> String {
     rendered
 }
 
-pub fn render_to_html(input: &Vec<Token>) -> String {
+pub fn render_to_html(input: &[Token]) -> String {
     let mut rendered = String::new();
     rendered
         .push_str("<div class=\"highlight\"><pre class=\"prism\"><code class=\"language-rust\">");
