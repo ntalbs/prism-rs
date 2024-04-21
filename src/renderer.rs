@@ -41,6 +41,33 @@ pub fn render_to_html(input: &[Token]) -> String {
     rendered
 }
 
+pub fn render_to_html_with_line_num(input: &[Token]) -> String {
+    let mut rendered = String::new();
+    rendered.push_str("<div class=\"highlight\">");
+
+    rendered.push_str("<pre class=\"gutter\">");
+
+    let linum = input.iter().filter(|t| **t == Token::NewLine()).count();
+    for i in 1..=linum {
+        rendered.push_str(&format!("{i:-3}\n"));
+    }
+
+    rendered.push_str("</pre>");
+
+    rendered.push_str("<pre class=\"prism\"><code class=\"language-rust\">");
+
+    for line in input.split(|t| *t == Token::NewLine()) {
+        rendered.push_str("<span class=\"line\">");
+        for token in line {
+            rendered.push_str(&render_token_to_html(token));
+        }
+        rendered.push_str("</span>\n")
+    }
+
+    rendered.push_str("</code></pre></div>");
+    rendered
+}
+
 fn render_token_to_console(token: &Token) -> String {
     match token {
         Token::Whitespace(s) => s.into(),

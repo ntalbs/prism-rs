@@ -10,7 +10,11 @@ fn main() -> io::Result<()> {
         let source = fs::read_to_string(f)?;
         println!("{}", Prism::new(&source).render_to_console_with_line_num());
 
+        println!(">>> To html");
         println!("{}", Prism::new(&source).render_to_html());
+
+        println!(">>> To html with line num");
+        println!("{}", Prism::new(&source).render_to_html_with_line_num());
     }
     Ok(())
 }

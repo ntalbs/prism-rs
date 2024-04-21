@@ -36,4 +36,7 @@ fn test_block_string() {
 
     println!(">>> HTML");
     println!("{}", Prism::new(source).render_to_html());
+
+    println!(">>> HTML with line number");
+    println!("{}", Prism::new(source).render_to_html_with_line_num());
 }

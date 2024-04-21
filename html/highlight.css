@@ -25,3 +25,12 @@
 .kw {
   color: purple;
 }
+
+.gutter {
+  float: left;
+  padding-right: 10px;
+}
+
+.prism {
+  float: left;
+}
