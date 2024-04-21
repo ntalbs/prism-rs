@@ -16,8 +16,7 @@ fn test() -> io::Result<()> {
 
 #[test]
 fn test_block_string() {
-    let source = r#"
-    /*
+    let source = r#"    /*
      * Block comment line 1.
      * Block comment line 2.
      */
@@ -25,8 +24,7 @@ fn test_block_string() {
         let a = 10; // a = 10
         let b = 20; // b = 20
         println!("a + b = {}", a + b);
-    }
-    "#;
+    }"#;
 
     println!(">>> Without line numbers");
     println!("{}", Prism::new(source).render_to_console());
