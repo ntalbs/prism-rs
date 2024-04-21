@@ -47,7 +47,7 @@ pub fn render_to_html_with_line_num(input: &[Token]) -> String {
 
     rendered.push_str("<pre class=\"gutter\">");
 
-    let linum = input.iter().filter(|t| **t == Token::NewLine()).count();
+    let linum = input.iter().filter(|t| **t == Token::NewLine()).count() + 1;
     for i in 1..=linum {
         rendered.push_str(&format!("{i:-3}\n"));
     }
